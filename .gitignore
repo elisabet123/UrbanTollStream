@@ -1,0 +1,120 @@
+# === Visual Studio / .NET ===
+## Build directories
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio temporary files
+.vs/
+
+## Rider / JetBrains
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Rider caches and local settings
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+
+# Rider's .idea dir wholly ignored above; if you want to keep some project files, whitelist them explicitly
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored because of PackageReference
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+# MSBuild
+*.builds
+*.Build.csproj
+
+# Dotnet publish
+publish/
+
+# Runtime
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+coverage/
+
+# EF Core
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Rider and .NET local secrets and settings
+secrets.json
+appsettings.*.Local.json
+appsettings.*.Local.*
+
+# Logs and temp
+*.log
+*.tlog
+*.tmp
+*.temp
+tmp/
+
+# VS Code
+.vscode/
+
+# Node (if present)
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# Docker
+docker-compose.override.yml
+
+# Yarn
+yarn-error.log
+
+# Coverage tools
+coverage/**
+coverage.*
+
+# JetBrains IDEs caches
+*.iml
+.idea/
+
+# Ignore user-specific JetBrains files
+*.iws
+
+# Rider workspace files
+*.sln.ide
+
+# Ignore generated swagger clients, obj and generated code folders
+Generated/
+**/Generated/
+
+# Optional: lock files for package managers if you want to ignore
+# package-lock.json
+# pnpm-lock.yaml
+# yarn.lock
+
+# End of .gitignore

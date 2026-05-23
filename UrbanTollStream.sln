@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanTollStream", "UrbanTollStream\UrbanTollStream.csproj", "{5170E0DE-1C95-4256-B45F-0BDB240A5040}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2667E968-9533-4723-BBDD-3C9AFD501281}"
+	ProjectSection(SolutionItems) = preProject
+		.github\copilot-instructions.md = .github\copilot-instructions.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "instructions", "instructions", "{0B45DA5F-C228-464E-87F2-7518EC1A80D1}"
+	ProjectSection(SolutionItems) = preProject
+		.github\instructions\csharp.md = .github\instructions\csharp.md
+		.github\instructions\infrastructure.md = .github\instructions\infrastructure.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5170E0DE-1C95-4256-B45F-0BDB240A5040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5170E0DE-1C95-4256-B45F-0BDB240A5040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5170E0DE-1C95-4256-B45F-0BDB240A5040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5170E0DE-1C95-4256-B45F-0BDB240A5040}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B45DA5F-C228-464E-87F2-7518EC1A80D1} = {2667E968-9533-4723-BBDD-3C9AFD501281}
+	EndGlobalSection
+EndGlobal
