@@ -1,21 +1,25 @@
+using System.Text;
+using System.Text.Json;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+using IngestionAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
+using IngestionAPI;
+using SharedTypes.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(sp =>
-{
-    var cosmosConnectionString = builder.Configuration.GetConnectionString("cosmos")!;
-    var cosmos = new CosmosClient(cosmosConnectionString.Replace("https", "http"), new CosmosClientOptions
+builder.Services.AddSingleton(_ =>
     {
-        ConnectionMode = ConnectionMode.Gateway,
-        LimitToEndpoint = true
+        var cosmosConnectionString = builder.Configuration.GetConnectionString("cosmos")!;
+        return DetectionDatabase.DetectionDatabase.Create(cosmosConnectionString);
+    })
+    .AddSingleton(_ =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("eventhub")!;
+        return new EventHubProducerClient(connectionString, "detectionevents");
     });
 
-    return cosmos;
-});
-
-// Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -29,40 +33,29 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/signal", async ([FromServices] CosmosClient cosmosClient, SignalDTO signalDto) =>
+app.MapPost("/signal", async ([FromServices] ILogger<Program> logger,[FromServices] DetectionDatabase.DetectionDatabase database, [FromServices] EventHubProducerClient producerClient, SignalDto signalDto) =>
 {
     // TODO configurable confidence threshold
     if (signalDto.Confidence < 0.5)
     {
-        Console.WriteLine($"Low confidence signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId}. Ignoring.");
+        logger.LogInformation($"Low confidence signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId}. Ignoring.");
         return Results.BadRequest("Signal confidence too low.");
     }
-    // TODO deterministic detection ID generation based on signal content
-    var signalDocument = new SignalDocument(Guid.NewGuid(), Guid.NewGuid(), signalDto.CameraId, signalDto.Timestamp, signalDto.ImageUrl, signalDto.VehicleId, signalDto.Confidence);
-    
-    // TODO setup database and container somewhere reasonable
-    // TODO repository pattern and better error handling
-    await cosmosClient.CreateDatabaseIfNotExistsAsync("signalsdb");
-    var database = cosmosClient.GetDatabase("signalsdb");
-    await database.CreateContainerIfNotExistsAsync("signals", "/CameraId");
-    var container = database.GetContainer("signals");
-    
-    await container.CreateItemAsync(signalDocument, new PartitionKey(signalDto.CameraId.ToString()));
-    Console.WriteLine($"Signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId} with confidence {signalDto.Confidence}. Stored in Cosmos DB.");
+
+    var detection = await database.StoreSignal(signalDto);
+    logger.LogDebug($"Signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId} with confidence {signalDto.Confidence}. Stored in Cosmos DB.");
+
+    var message = new DetectionCreated(detection);
+    var newEvent = new EventData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)))
+    {
+        ContentType = "application/json",
+        Properties =
+        {
+            { "messageType", typeof(DetectionCreated).FullName }
+        }
+    };
+    await producerClient.SendAsync([newEvent]);
     return Results.Ok();
 });
 
 app.Run();
-
-// TODO move to separate file and add validation attributes
-public class SignalDTO
-{
-    public Guid CameraId { get; init; }
-    public DateTime Timestamp { get; init; }
-    public string ImageUrl { get; init; }
-    public string VehicleId { get; init; }
-    public double Confidence { get; init; }
-}
-
-// TODO move to repository
-public record SignalDocument(Guid id, Guid DetectionId, Guid CameraId, DateTime Timestamp, string ImageUrl, string VehicleId, double Confidence);
