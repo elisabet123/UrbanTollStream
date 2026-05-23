@@ -8,4 +8,20 @@
         <UserSecretsId>2ce16ec9-aa23-49fa-b61f-74dc4aa5f643</UserSecretsId>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\src\Services\IngestionAPI\IngestionAPI.csproj" />
+        <ProjectReference Include="..\src\Services\SignalAPI\SignalAPI.csproj" />
+        <ProjectReference Include="..\src\Services\FeeService\FeeService.csproj" />
+        <ProjectReference Include="..\src\Services\OwnershipService\OwnershipService.csproj" />
+        <ProjectReference Include="..\src\Services\ProcessingService\ProcessingService.csproj" />
+        <ProjectReference Include="..\src\Services\AggregationService\AggregationService.csproj" />
+        <ProjectReference Include="..\src\Services\BillingService\BillingService.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.Azure.CosmosDB" Version="13.0.0" />
+        <PackageReference Include="Aspire.Hosting.Azure.EventHubs" Version="13.0.0" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+    </ItemGroup>
+
 </Project>

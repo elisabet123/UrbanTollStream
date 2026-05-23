@@ -1,0 +1,6 @@
+@FeeService_HostAddress = http://localhost:5219
+
+GET {{FeeService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

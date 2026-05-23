@@ -1,0 +1,6 @@
+@OwnershipService_HostAddress = http://localhost:5052
+
+GET {{OwnershipService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
