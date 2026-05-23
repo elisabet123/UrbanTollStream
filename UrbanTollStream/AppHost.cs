@@ -3,12 +3,30 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Infrastructure Resources
 var cosmos = builder
     .AddAzureCosmosDB("cosmos")
-    .RunAsEmulator(opts => opts.WithImageTag("vnext-preview"))
-    .WithHttpEndpoint(name: "cosmos-explorer", port: 8081, targetPort: 8081);
+    .RunAsEmulator(opts => opts.WithImageTag("vnext-EN20251022"))
+    .WithEndpoint(endpointName: "data-explorer", endpoint =>
+    {
+        endpoint.UriScheme = "http";
+        endpoint.TargetPort = 1234;
+        endpoint.Port = 1234;
+    })
+    .WithUrls(context =>
+    {
+        var url = context.Urls.FirstOrDefault(u => u.Endpoint?.EndpointName == "data-explorer");
+#pragma warning disable IDE0031 // Use null propagation (IDE0031)
+        if (url is not null)
+#pragma warning restore IDE0031
+        {
+            url.DisplayText = "Data Explorer";
+        }
+    });
 
 var eventHub = builder
     .AddAzureEventHubs("eventhub")
     .RunAsEmulator();
+var detectionEvents = eventHub.AddHub("detectionevents");
+detectionEvents.AddConsumerGroup("eventconsumer-processingservice");
+detectionEvents.AddConsumerGroup("eventconsumer-aggregationservice");
 
 var postgres = builder
     .AddPostgres("postgres")
