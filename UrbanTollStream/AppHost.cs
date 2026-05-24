@@ -23,7 +23,6 @@ var cosmos = builder
         }
     });
 
-// TODO constants
 var eventHub = builder
     .AddAzureEventHubs(EventHubNames.EventHub)
     .RunAsEmulator();

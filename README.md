@@ -16,11 +16,12 @@ flowchart LR
     EnrichmentService <--> OwnershipService
     OwnershipService --> ExternalAPI["Vehicle Registry API\n(Trafikverket)"]
 
-    EnrichmentService --> FeeService["FeeService\nRules and Fees"]
+    EnrichmentService <--> FeeService["FeeService\nRules and Fees"]
+    FeeService -->|Rules| RuleDB[(Rules\nStorage)]
 
-    FeeService -->|PassageFeeCalculated| EventHub
+    EnrichmentService -->|DetectionEnriched| EventHub
 
-    EventHub -->|PassageFeeCalculated\nDetectionDeleted| AggregationService["AggregationService\nDaily fee per vehicle"]
+    EventHub -->|DetectionEnriched\nDetectionDeleted| AggregationService["AggregationService\nDaily fee per vehicle"]
     AggregationService --> AggregationDB[(Daily Charges\nSQL)]
 
     AggregationService --> MappingDB[("Detection->DailyFee\nMapping\nSQL")]
