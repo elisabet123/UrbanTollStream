@@ -9,11 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\src\Libraries\SharedTypes\SharedTypes.csproj" IsAspireProjectResource="false" />
         <ProjectReference Include="..\src\Services\IngestionAPI\IngestionAPI.csproj" />
         <ProjectReference Include="..\src\Services\SignalAPI\SignalAPI.csproj" />
         <ProjectReference Include="..\src\Services\FeeService\FeeService.csproj" />
         <ProjectReference Include="..\src\Services\OwnershipService\OwnershipService.csproj" />
-        <ProjectReference Include="..\src\Services\ProcessingService\ProcessingService.csproj" />
+        <ProjectReference Include="..\src\Services\EnrichmentService\EnrichmentService.csproj" />
         <ProjectReference Include="..\src\Services\AggregationService\AggregationService.csproj" />
         <ProjectReference Include="..\src\Services\BillingService\BillingService.csproj" />
     </ItemGroup>

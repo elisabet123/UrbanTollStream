@@ -11,12 +11,12 @@ flowchart LR
     IngestionAPI --> |DetectionCreated| EventHub["Event Hub"]
     SignalAPI --> |DetectionUpdated\nDetectionDeleted| EventHub
 
-    EventHub --> |DetectionCreated\nDetectionUpdated| ProcessingService["ProcessingService\nEnrich"]
+    EventHub --> |DetectionCreated\nDetectionUpdated| EnrichmentService["EnrichmentService\nEnrich"]
 
-    ProcessingService <--> OwnershipService
+    EnrichmentService <--> OwnershipService
     OwnershipService --> ExternalAPI["Vehicle Registry API\n(Trafikverket)"]
 
-    ProcessingService --> FeeService["FeeService\nRules and Fees"]
+    EnrichmentService --> FeeService["FeeService\nRules and Fees"]
 
     FeeService -->|PassageFeeCalculated| EventHub
 
@@ -59,9 +59,9 @@ DetectionAlerts:
 - imageUrl
 ---
 
-## 2. Processing
+## 2. Enrichment
 
-The Processing Service subscribes to detection events and:
+The Enrichment Service subscribes to detection events and:
 
 - Calls the Ownership Service to determine **who owned the vehicle at the time**
 - Enriches the detection with `ownerId`
@@ -130,7 +130,7 @@ If external data changes (e.g. ownership corrections, camera time corrections):
 - A replay process identifies affected detections (vehicle + time range)
 - Detections are resubmitted via the Signal API
 - The same pipeline is reused:
-  - Detection → Processing → Fee → Aggregation
+  - Detection → Enrichment → Fee → Aggregation
 
 This ensures the system converges to the correct state without special-case logic.
 
@@ -140,7 +140,7 @@ This ensures the system converges to the correct state without special-case logi
 
 - Event-driven architecture
 - Clear separation of concerns
-- Stateless services (processing, fee calculation)
+- Stateless services (enrichment, fee calculation)
 - Stateful aggregation as a projection
 - Reprocessing instead of complex joins
 - External dependencies isolated behind dedicated services

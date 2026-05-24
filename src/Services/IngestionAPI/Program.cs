@@ -1,24 +1,17 @@
-using System.Text;
-using System.Text.Json;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
+using IngestionAPI;
 using IngestionAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using IngestionAPI;
 using SharedTypes.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+var cosmosConnectionString = configuration.GetConnectionString("cosmos")!;
+var eventHubConnectionString = configuration.GetConnectionString("eventhub")!;
 
-builder.Services.AddSingleton(_ =>
-    {
-        var cosmosConnectionString = builder.Configuration.GetConnectionString("cosmos")!;
-        return DetectionDatabase.DetectionDatabase.Create(cosmosConnectionString);
-    })
-    .AddSingleton(_ =>
-    {
-        var connectionString = builder.Configuration.GetConnectionString("eventhub")!;
-        return new EventHubProducerClient(connectionString, "detectionevents");
-    });
+builder.Services.AddSingleton(DetectionDatabase.DetectionDatabase.Create(cosmosConnectionString))
+    .AddSingleton(new EventHubProducerClient(eventHubConnectionString, "detectionevents"));
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -33,7 +26,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/signal", async ([FromServices] ILogger<Program> logger,[FromServices] DetectionDatabase.DetectionDatabase database, [FromServices] EventHubProducerClient producerClient, SignalDto signalDto) =>
+app.MapPost("/signal", async ([FromServices] ILogger<Program> logger, [FromServices] DetectionDatabase.DetectionDatabase database, [FromServices] EventHubProducerClient producerClient, SignalDto signalDto) =>
 {
     // TODO configurable confidence threshold
     if (signalDto.Confidence < 0.5)
@@ -46,15 +39,19 @@ app.MapPost("/signal", async ([FromServices] ILogger<Program> logger,[FromServic
     logger.LogDebug($"Signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId} with confidence {signalDto.Confidence}. Stored in Cosmos DB.");
 
     var message = new DetectionCreated(detection);
-    var newEvent = new EventData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)))
+    await producerClient.SendAsync([message.ToEventData()]);
+    
+    var anotherEvent = new EventData(new BinaryData($"Another event for detection {detection.DetectionId}"))
     {
-        ContentType = "application/json",
+        ContentType = "text/plain",
         Properties =
         {
-            { "messageType", typeof(DetectionCreated).FullName }
+            {
+                "messageType", "AnotherEvent"
+            }
         }
     };
-    await producerClient.SendAsync([newEvent]);
+    await producerClient.SendAsync([anotherEvent]);
     return Results.Ok();
 });
 

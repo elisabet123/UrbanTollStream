@@ -1,3 +1,5 @@
+using SharedTypes;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Infrastructure Resources
@@ -21,12 +23,13 @@ var cosmos = builder
         }
     });
 
+// TODO constants
 var eventHub = builder
-    .AddAzureEventHubs("eventhub")
+    .AddAzureEventHubs(EventHubNames.EventHub)
     .RunAsEmulator();
-var detectionEvents = eventHub.AddHub("detectionevents");
-detectionEvents.AddConsumerGroup("eventconsumer-processingservice");
-detectionEvents.AddConsumerGroup("eventconsumer-aggregationservice");
+var detectionEvents = eventHub.AddHub(EventHubNames.EventHubName);
+detectionEvents.AddConsumerGroup(EventHubNames.EventHubConsumerGroupEnrichment);
+detectionEvents.AddConsumerGroup(EventHubNames.EventHubConsumerGroupAggregation);
 
 var postgres = builder
     .AddPostgres("postgres")
@@ -56,7 +59,7 @@ _ = builder
 
 // Worker Services
 _ = builder
-    .AddProject<Projects.ProcessingService>("processingservice")
+    .AddProject<Projects.EnrichmentService>("enrichmentservice")
     .WithReference(eventHub);
 
 _ = builder
