@@ -146,3 +146,14 @@ This ensures the system converges to the correct state without special-case logi
 - External dependencies isolated behind dedicated services
 
 ---
+
+# Out of Scope
+
+Intentionally skipped, but is required for a real, production-worthy, system:
+- Security: authentication, authorization, data protection, zero trust
+- Infrastructure: deployment, scaling, monitoring. This is a pure Aspire project
+- Testing: unit, integration, end-to-end testing strategies
+- UI/UX: user interfaces for admin or customer portals
+- Error handling and retries: detailed strategies for handling failures, retries, and compensating actions
+- Data retention and GDPR compliance: strategies for data lifecycle management, anonymization, and user data
+- Performance optimization: caching strategies, database indexing, and other optimizations for high throughput and low latency
