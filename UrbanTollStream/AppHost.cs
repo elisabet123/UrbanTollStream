@@ -48,8 +48,7 @@ _ = builder
     .WithHttpEndpoint(name: "signal-http");
 
 var feeService = builder
-    .AddProject<Projects.FeeService>("feeservice")
-    .WithHttpEndpoint(name: "fee-http");
+    .AddProject<Projects.FeeService>("feeservice");
 
 var ownershipService = builder
     .AddProject<Projects.OwnershipService>("ownershipservice");

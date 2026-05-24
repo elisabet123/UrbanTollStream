@@ -12,7 +12,7 @@ public class Worker(ILogger<Worker> logger, DetectionConsumer detectionConsumer,
         detectionConsumer.On(async (DetectionCreated detectionCreated, CancellationToken _) =>
         {
             var owner = ownerService.GetOwner(detectionCreated.Detection.VehicleId, detectionCreated.Detection.Timestamp);
-            var fee = feeService.GetFeeAsync(detectionCreated.Detection.VehicleId, detectionCreated.Detection.Timestamp);
+            var fee = feeService.GetFeeAsync(detectionCreated.Detection.CameraId, detectionCreated.Detection.Timestamp);
             await Task.WhenAll(owner, fee);
             logger.LogDebug("Received DetectionCreated event with ID: {DetectionId}, enriched with fee {Fee} and owner {Owner}", detectionCreated.Detection.DetectionId, fee.Result, owner.Result);
             var enrichedDetection = new DetectionEnriched(

@@ -17,11 +17,14 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 
 builder.Services
     .AddServiceDiscovery()
-    .AddSingleton(new DetectionConsumer(new EventHubConsumerClient(EventHubNames.EventHubConsumerGroupEnrichment, eventHubConnectionString, EventHubNames.EventHubName)))
-    .AddSingleton(new DetectionProducer(new EventHubProducerClient(eventHubConnectionString, EventHubNames.EventHubName)))
+    .AddSingleton(new EventHubConsumerClient(EventHubNames.EventHubConsumerGroupEnrichment, eventHubConnectionString, EventHubNames.EventHubName))
+    .AddSingleton<DetectionConsumer>()
+    .AddSingleton(new EventHubProducerClient(eventHubConnectionString, EventHubNames.EventHubName))
+    .AddSingleton<DetectionProducer>()
     .AddSingleton<OwnerService>()
-    .AddSingleton(new FeeService())
+    .AddSingleton<FeeService>()
     .AddHttpClient(nameof(OwnerService), client => client.BaseAddress = new("http://ownershipservice"));
+builder.Services.AddHttpClient(nameof(FeeService), client => client.BaseAddress = new("http://feeservice"));
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

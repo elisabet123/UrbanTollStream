@@ -1,3 +1,5 @@
+using SharedTypes;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,29 +15,22 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
+app.MapGet("/fee", (Guid cameraId, DateTime date) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    // TODO implement actual fee logic based on cameraId and date, add more conditions
+    if (date.Hour < 6 || date.Hour > 22)
+    {
+        return new Fee(0, "20260524", ["Off-peak hours"]);
+    }
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    if (cameraId == Guid.Parse("123e4567-e89b-12d3-a456-426614174000"))
+    {
+        return new Fee(20, "20260524", ["Zone A"]);
+    }
+    
+    var fee = new Fee(10, "20260524", ["default fee"]);
+    return fee;
+});
 
+// TODO API for updating fee rules, e.g. for different zones, time-based fees, etc.
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

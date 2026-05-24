@@ -1,15 +1,18 @@
+using System.Net.Http.Json;
 using SharedTypes;
 
 namespace EnrichmentService.Services;
 
-public class FeeService
+public class FeeService(IHttpClientFactory httpClientFactory, ILogger<FeeService> logger)
 {
-    public async Task<Fee> GetFeeAsync(string vehicleId, DateTime date)
+    public async Task<Fee> GetFeeAsync(Guid cameraId, DateTime date)
     {
-        // Placeholder implementation. In a real implementation, this would query a database or another service to get the fee information based on the vehicleId and date.
-        await Task.Delay(100); // Simulate async work
-        Console.WriteLine($"Enriched with fee for vehicle {vehicleId} on date {date}");
-        // TODO call FeeService to get the fee information based on the vehicleId and date
-        return new Fee(20, "v1.0", new[] { "Rule1", "Rule2" });
+        var client = httpClientFactory.CreateClient(nameof(FeeService));
+        var response = await client.GetAsync("/fee?" + $"cameraId={cameraId}&date={date:o}");
+        // TODO retry logic in case of transient errors
+        response.EnsureSuccessStatusCode();
+        var fee = await response.Content.ReadFromJsonAsync<Fee>();
+        // TODO error handling if fee is null
+        return fee!;
     }
 }
