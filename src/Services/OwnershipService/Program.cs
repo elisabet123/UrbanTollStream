@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using SharedTypes;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,28 +17,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/owner", ([FromQuery] string vehicleId, [FromQuery] DateTime date) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    // TODO query transportstyrelsen about the owner of vehicles at certain dates and keep records in a database for faster retrieval
+    if (vehicleId == "ABC123" && date < DateTime.UtcNow.AddDays(-30))
+    {
+        return new Owner("Jane", "Smith");
+    }
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    return new Owner("John", "Doe");
+}).WithName("GetOwner");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

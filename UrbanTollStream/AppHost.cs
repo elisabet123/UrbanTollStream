@@ -47,18 +47,18 @@ _ = builder
     .WithReference(eventHub)
     .WithHttpEndpoint(name: "signal-http");
 
-_ = builder
+var feeService = builder
     .AddProject<Projects.FeeService>("feeservice")
-    .WithReference(eventHub)
     .WithHttpEndpoint(name: "fee-http");
 
-_ = builder
-    .AddProject<Projects.OwnershipService>("ownershipservice")
-    .WithHttpEndpoint(name: "ownership-http");
+var ownershipService = builder
+    .AddProject<Projects.OwnershipService>("ownershipservice");
 
 // Worker Services
 _ = builder
     .AddProject<Projects.EnrichmentService>("enrichmentservice")
+    .WithReference(feeService)
+    .WithReference(ownershipService)
     .WithReference(eventHub);
 
 _ = builder

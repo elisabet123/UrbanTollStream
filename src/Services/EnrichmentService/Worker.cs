@@ -1,5 +1,3 @@
-using System.Transactions;
-using Azure.Messaging.EventHubs.Consumer;
 using EnrichmentService.Services;
 using SharedTypes;
 using SharedTypes.EventHub;

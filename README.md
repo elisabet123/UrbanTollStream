@@ -66,8 +66,9 @@ The Enrichment Service subscribes to detection events and:
 
 - Calls the Ownership Service to determine **who owned the vehicle at the time**
 - Enriches the detection with `ownerId`
+- Enriches the detection with Fee (fee, rulesApplied and ruleVersion)
 
-The detection event, enriched with OwnerId is then passed to the Fee Service.
+The enriched detection event is then emitted for downstream processing.
 
 ---
 
@@ -77,10 +78,6 @@ The Fee Service calculates the toll for a single passage based on:
 - timestamp
 - zone / pricing rules
 
-It emits a `PassageFeeCalculated` event, a detection-event enriched with:
-- fee
-- ruleVersion
-
 ---
 
 ## 4. Aggregation
@@ -88,7 +85,7 @@ It emits a `PassageFeeCalculated` event, a detection-event enriched with:
 The Aggregation Service builds **daily charges per vehicle**.
 
 - Subscribes to:
-  - `PassageFeeCalculated`
+  - `DetectionEnriched`
   - `DetectionDeleted`
 - Maintains state per `(vehicleId, date)`
 - Applies business rules:

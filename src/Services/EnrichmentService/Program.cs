@@ -8,11 +8,20 @@ using SharedTypes.EventHub;
 var builder = Host.CreateApplicationBuilder(args);
 var configuration = builder.Configuration;
 var eventHubConnectionString = configuration.GetConnectionString("eventhub")!;
+
+builder.Services.ConfigureHttpClientDefaults(http =>
+{
+    // Turn on service discovery by default
+    http.AddServiceDiscovery();
+});
+
 builder.Services
+    .AddServiceDiscovery()
     .AddSingleton(new DetectionConsumer(new EventHubConsumerClient(EventHubNames.EventHubConsumerGroupEnrichment, eventHubConnectionString, EventHubNames.EventHubName)))
     .AddSingleton(new DetectionProducer(new EventHubProducerClient(eventHubConnectionString, EventHubNames.EventHubName)))
-    .AddSingleton(new OwnerService())
-    .AddSingleton(new FeeService());
+    .AddSingleton<OwnerService>()
+    .AddSingleton(new FeeService())
+    .AddHttpClient(nameof(OwnerService), client => client.BaseAddress = new("http://ownershipservice"));
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
