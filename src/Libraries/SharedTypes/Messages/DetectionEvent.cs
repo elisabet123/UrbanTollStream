@@ -4,12 +4,11 @@ using Azure.Messaging.EventHubs;
 
 namespace SharedTypes.Messages;
 
-public class DetectionEvent<T>(Detection detection)
+public record DetectionEvent
 {
-    public Detection Detection { get; } = detection;
-    public EventData ToEventData()
+    public static EventData ToEventData<T>(T detectionEvent) where T : DetectionEvent
     {
-        return new EventData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this)))
+        return new EventData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(detectionEvent)))
         {
             ContentType = "application/json",
             Properties =

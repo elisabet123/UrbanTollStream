@@ -5,8 +5,8 @@ Content-Type: application/json
 
 {
   "cameraId": "123e4567-e89b-12d3-a456-426614174000",
-  "timestamp": "2026-05-21T19:00:00Z",
-  "imageUrl": "http://example.com/image.jpg",
+  "timestamp": "2026-05-21T15:00:00Z",
+  "imageUrl": "http://example.com/image3.jpg",
   "vehicleId": "ABC123",
   "confidence": 0.95
 }

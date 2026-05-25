@@ -11,7 +11,7 @@ var configuration = builder.Configuration;
 var cosmosConnectionString = configuration.GetConnectionString("cosmos")!;
 var eventHubConnectionString = configuration.GetConnectionString("eventhub")!;
 
-builder.Services.AddSingleton(DetectionDatabase.DetectionDatabase.Create(cosmosConnectionString))
+builder.Services.AddSingleton(new DetectionDatabase.DetectionDatabase(cosmosConnectionString))
     .AddSingleton(new DetectionProducer(new EventHubProducerClient(eventHubConnectionString, EventHubNames.EventHubName)));
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -39,7 +39,8 @@ app.MapPost("/signal", async ([FromServices] ILogger<Program> logger, [FromServi
     var detection = await database.StoreSignal(signalDto);
     logger.LogDebug($"Signal received for vehicle {signalDto.VehicleId} at camera {signalDto.CameraId} with confidence {signalDto.Confidence}. Stored in Cosmos DB.");
 
-    await producerClient.SendAsync(new DetectionCreated(detection));
+    var detectionCreated = new DetectionCreated(detection);
+    await producerClient.SendAsync(detectionCreated);
 
     return Results.Ok();
 });

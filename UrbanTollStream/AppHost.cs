@@ -30,15 +30,12 @@ var detectionEvents = eventHub.AddHub(EventHubNames.EventHubName);
 detectionEvents.AddConsumerGroup(EventHubNames.EventHubConsumerGroupEnrichment);
 detectionEvents.AddConsumerGroup(EventHubNames.EventHubConsumerGroupAggregation);
 
-var postgres = builder
-    .AddPostgres("postgres")
-    .AddDatabase("urbantollstream");
-
 // API Services
 _ = builder
     .AddProject<Projects.IngestionAPI>("ingestionapi")
     .WithReference(cosmos)
     .WithReference(eventHub)
+    .WaitFor(eventHub)
     .WithHttpEndpoint(name: "ingestion-http");
 
 _ = builder
@@ -58,15 +55,17 @@ _ = builder
     .AddProject<Projects.EnrichmentService>("enrichmentservice")
     .WithReference(feeService)
     .WithReference(ownershipService)
-    .WithReference(eventHub);
+    .WithReference(eventHub)
+    .WaitFor(eventHub);
 
 _ = builder
     .AddProject<Projects.AggregationService>("aggregationservice")
     .WithReference(eventHub)
-    .WithReference(postgres);
+    .WaitFor(eventHub)
+    .WithReference(cosmos);
 
 _ = builder
     .AddProject<Projects.BillingService>("billingservice")
-    .WithReference(postgres);
+    .WithReference(cosmos);
 
 builder.Build().Run();
