@@ -58,6 +58,9 @@ DetectionAlerts:
 - licensePlate/vehicleId
 - confidence
 - imageUrl
+
+Cameras are expected to send vehicle id (e.g. license plate) but in real life we might want to support signals without it.
+
 ---
 
 ## 2. Enrichment
@@ -128,20 +131,9 @@ If external data changes (e.g. ownership corrections, camera time corrections):
 - A replay process identifies affected detections (vehicle + time range)
 - Detections are resubmitted via the Signal API
 - The same pipeline is reused:
-  - Detection → Enrichment → Fee → Aggregation
+  - Detection → Enrichment → Aggregation
 
 This ensures the system converges to the correct state without special-case logic.
-
----
-
-# Key Design Principles
-
-- Event-driven architecture
-- Clear separation of concerns
-- Stateless services (enrichment, fee calculation)
-- Stateful aggregation as a projection
-- Reprocessing instead of complex joins
-- External dependencies isolated behind dedicated services
 
 ---
 
@@ -155,3 +147,17 @@ Intentionally skipped, but is required for a real, production-worthy, system:
 - Error handling and retries: detailed strategies for handling failures, retries, and compensating actions
 - Data retention and GDPR compliance: strategies for data lifecycle management, anonymization, and user data
 - Performance optimization: caching strategies, database indexing, and other optimizations for high throughput and low latency
+
+# Running locally
+
+The system is using aspire. The easiest way to run it locally is by using Rider/VisualStudio with the aspire plugin. 
+Press play on `UrbanTollStream/AppHost.cs` and all should spin up. Use the queries in `src/Services/IngestionAPI/IngestionAPI.http`
+and `src/Services/SignalAPI/SignalAPI.http` to mimic signals from cameras and reprocessing signals.
+
+## NOT IMPLEMENTED
+- External API calls (Ownership Service is mocked, no real calls to Trafikverket)
+- Actual fee calculation logic (Fee Service returns fixed fees)
+- Real aggregation logic (Aggregation Service does not implement 60-minute rule)
+- Billing logic (Billing Service is just an empty shell)
+- Postgres is not used, only CosmosDB.
+- Update flow is not implemented, only deletion of detections is supported. (Updates can be sent through the Ingestion API)
