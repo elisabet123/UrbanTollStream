@@ -25,6 +25,11 @@ app.MapGet("/owner", ([FromQuery] string vehicleId, [FromQuery] DateTime date) =
         return new Owner("Jane", "Smith");
     }
 
+    if (vehicleId == "ABC456")
+    {
+        return new Owner("Jane", "Smith");
+    }
+
     return new Owner("John", "Doe");
 }).WithName("GetOwner");
 

@@ -1,5 +1,6 @@
 @IngestionAPI_HostAddress = http://localhost:5191
 
+### Camera A, Vehicle A, 2026-05-21 image 3 90128B607A80F8C348C092F97BBE53FB56A8D0D9
 POST {{IngestionAPI_HostAddress}}/signal/
 Content-Type: application/json
 
@@ -11,4 +12,92 @@ Content-Type: application/json
   "confidence": 0.95
 }
 
-###
+### Camera A, Vehicle A, 2026-05-21 image 4 56077A8523ADAE19AAD15A769CAEA4AA2446C9FC
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-21T15:10:00Z",
+  "imageUrl": "http://example.com/image4.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}
+
+### Camera A, Vehicle A, 2026-05-21 image 4 (duplicate)
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-21T15:10:00Z",
+  "imageUrl": "http://example.com/image4.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}
+
+### Camera A, Vehicle A, 2026-05-21 image 5 (nighttime)
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-21T23:10:00Z",
+  "imageUrl": "http://example.com/image5.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}
+
+### Camera B, Vehicle A, 2026-05-21 image 1
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174001",
+  "timestamp": "2026-05-21T15:10:00Z",
+  "imageUrl": "http://example.com/image1.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}
+
+### Camera A, Vehicle A, 2026-05-22 image 14
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-22T15:10:00Z",
+  "imageUrl": "http://example.com/image14.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}
+
+### Camera A, Vehicle B, 2026-05-21 image 6 B37F2582D35E381936EB202110A802D458FFE63D
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-21T15:10:00Z",
+  "imageUrl": "http://example.com/image6.jpg",
+  "vehicleId": "ABC456",
+  "confidence": 0.95
+}
+
+### Camera A, Vehicle A, 2026-05-21 image 6 (updated vehicle)
+
+POST {{IngestionAPI_HostAddress}}/signal/
+Content-Type: application/json
+
+{
+  "cameraId": "123e4567-e89b-12d3-a456-426614174000",
+  "timestamp": "2026-05-21T15:10:00Z",
+  "imageUrl": "http://example.com/image6.jpg",
+  "vehicleId": "ABC123",
+  "confidence": 0.95
+}

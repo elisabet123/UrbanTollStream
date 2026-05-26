@@ -1,6 +1,5 @@
 @SignalAPI_HostAddress = http://localhost:5299
 
-GET {{SignalAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+DELETE {{SignalAPI_HostAddress}}/detections/B37F2582D35E381936EB202110A802D458FFE63D
 
 ###

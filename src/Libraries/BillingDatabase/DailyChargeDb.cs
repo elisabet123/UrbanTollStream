@@ -21,6 +21,7 @@ public class DailyChargeDb(string connectionString)
         return response.Container;
     });
 
+    // TODO cancellation token
     public async Task<DailyCharge?> GetDailyCharge(DateTime date, string vehicleId)
     {
         var container = await _lazyContainer.Value;
@@ -36,6 +37,7 @@ public class DailyChargeDb(string connectionString)
         }
     }
 
+    // TODO cancellation token
     public async Task SetDailyCharge(DailyCharge dailyCharge)
     {
         var container = await _lazyContainer.Value;

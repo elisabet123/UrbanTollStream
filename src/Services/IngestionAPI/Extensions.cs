@@ -9,7 +9,7 @@ public static class Extensions
     {
         public async Task<Detection> StoreSignal(SignalDto signalDto)
         {
-            var signal = new Signal(signalDto.CameraId, signalDto.Timestamp, signalDto.ImageUrl, signalDto.VehicleId, signalDto.Confidence);
+            var signal = new Signal(signalDto.CameraId, signalDto.ImageUrl, signalDto.Timestamp, signalDto.VehicleId, signalDto.Confidence);
             return await database.StoreSignal(signal);
         }
         

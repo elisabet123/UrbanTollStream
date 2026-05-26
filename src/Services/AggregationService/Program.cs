@@ -14,7 +14,8 @@ var cosmosConnectionString = configuration.GetConnectionString("cosmos")!;
 builder.Services
     .AddSingleton(new EventHubConsumerClient(EventHubNames.EventHubConsumerGroupEnrichment, eventHubConnectionString, EventHubNames.EventHubName))
     .AddSingleton<DetectionConsumer>()
-    .AddSingleton(new DailyChargeDb(cosmosConnectionString));
+    .AddSingleton(new DailyChargeDb(cosmosConnectionString))
+    .AddSingleton(new DetectionLookupDb(cosmosConnectionString));
 
 var host = builder.Build();
 host.Run();

@@ -1,9 +1,12 @@
 namespace SharedTypes;
 
 public record Signal(
+    // Can not be changed
     Guid CameraId,
-    DateTime Timestamp,
+    // Can not be changed
     string ImageUrl,
-    string VehicleId,
-    double Confidence
+    DateTime? Timestamp = null,
+    string? VehicleId = null,
+    double? Confidence = null,
+    bool IsDeleted = false
 );
